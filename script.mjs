@@ -24,6 +24,22 @@ function getPoem(req, res, next) {
 }
 server.get("/tmp/poem", getPoem);
 
+// Array of quotes
+const quotes = [
+    "Nothing is true, everything is permitted",
+    "Once you've got a task to do, it's better to do it than live with the fear of it",
+    "Do or do not, there is no try",
+    "Mercy and weakness are the same thing in war, and there’s no prizes for nice behavior",
+    "The best way to predict the future is to invent it"
+];
+
+// Route for "/tmp/quote"
+function getQuote(req, res) {
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    res.status(HTTP_CODES.SUCCESS.OK).send(randomQuote).end();
+}
+server.get("/tmp/quote", getQuote);
+
 // Start the server
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
