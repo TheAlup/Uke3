@@ -1,5 +1,7 @@
 import express from 'express';
 import HTTP_CODES from './utils/httpCodes.mjs';
+import deckApi from './scriptUke4.mjs';
+
 
 const server = express();
 const port = (process.env.PORT || 8000);
