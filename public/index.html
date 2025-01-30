@@ -9,30 +9,18 @@
 <body>
   <h1>Deck of Cards API</h1>
 
-  <!-- Section to create a new deck -->
-  <div>
-    <button id="createDeckBtn">Create Deck</button>
-    <p id="deckIdDisplay">Deck ID: Not created yet</p>
-  </div>
 
-  <!-- Section to shuffle a deck -->
-  <div>
-    <input id="shuffleDeckId" type="text" placeholder="Enter Deck ID">
-    <button id="shuffleDeckBtn">Shuffle Deck</button>
-    <p id="shuffleMessage"></p>
-  </div>
+<!-- Add the Shuffle button in the HTML -->
+<div>
+  <input id="shuffleDeckId" type="text" placeholder="Enter Deck ID">
+  <button id="shuffleDeckBtn">Shuffle Deck</button>
+  <p id="shuffleMessage"></p>
+</div>
 
-  <!-- Section to get all cards in a deck -->
-  <div>
-    <input id="getDeckId" type="text" placeholder="Enter Deck ID">
-    <button id="getDeckBtn">Get Deck</button>
-    <pre id="deckCardsDisplay">Deck cards will appear here</pre>
-  </div>
 
   <!-- Section to draw a card -->
   <div>
-    <input id="drawCardDeckId" type="text" placeholder="Enter Deck ID">
-    <button id="drawCardBtn">Draw Card</button>
+    <button id="drawCard" disabled>Draw Card</button>
     <p id="cardDisplay">Card will appear here</p>
   </div>
 </body>
