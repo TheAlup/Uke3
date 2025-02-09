@@ -1,6 +1,6 @@
 // Create Deck
 document.getElementById('createDeckBtn').addEventListener('click', function() {
-    fetch('/temp/deck', {
+    fetch('/api/deck', {
         method: 'POST',
     })
     .then(response => response.json())
@@ -18,7 +18,7 @@ document.getElementById('getDeckBtn').addEventListener('click', function() {
         return;
     }
 
-    fetch(`/temp/deck/${deckId}`)
+    fetch(`/api/deck/${deckId}`)
         .then(response => response.json())
         .then(data => {
             const cards = data.cards.map(card => `${card.rank} of ${card.suit}`).join('\n');
@@ -35,7 +35,7 @@ document.getElementById('shuffleDeckBtn').addEventListener('click', function() {
         return;
     }
 
-    fetch(`/temp/deck/shuffle/${deckId}`, {
+    fetch(`/api/deck/shuffle/${deckId}`, {
         method: 'PATCH',
     })
     .then(response => response.json())
@@ -53,7 +53,7 @@ document.getElementById('drawCard').addEventListener('click', function() {
         return;
     }
 
-    fetch(`/temp/deck/${deckId}/card`)
+    fetch(`/api/deck/${deckId}/card`)
         .then(response => response.json())
         .then(card => {
             document.getElementById('cardDisplay').innerText = `${card.rank} of ${card.suit}`;
