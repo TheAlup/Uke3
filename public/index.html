@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<billa>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,18 +12,22 @@
   <!-- Section to create a new deck -->
   <div>
     <button id="createDeckBtn">Create Deck</button>
-    <p id="deckIdDisplay">Deck ID: Not created yet</p>
+    <p id="deckIdDisplay"><br></p>
+    <input id="inpDeckId" type="text" placeholder="Enter Deck ID">
+    <button id="getDeckBtn">Get Deck</button>
+
   </div>
 
   <!-- Section to get the deck -->
   <div>
-    <button id="getDeckBtn">Get Deck</button>
+    <h2 id="deckIdHeader">
+
+    </h2>
     <pre id="deckCardsDisplay"></pre>
   </div>
 
   <!-- Section to shuffle a deck -->
   <div>
-    <input id="shuffleDeckId" type="text" placeholder="Enter Deck ID">
     <button id="shuffleDeckBtn">Shuffle Deck</button>
     <p id="shuffleMessage"></p>
   </div>

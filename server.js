@@ -1,67 +1,88 @@
 const express = require("express");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 const app = express();
-const PORT = 8000;
-
+const PORT = process.env.PORT || 8000;
 
 // Middleware to parse JSON body
 app.use(express.json());
 
 // Middleware to serve static files (HTML, CSS, JS, etc.) from the 'public' folder
-app.use(express.static('public'));  // Make sure your index.html is in the 'public' folder
+app.use(express.static("public")); // Make sure your index.html is in the 'public' folder
 
-// Dummy deck data for example purposes
-let decks = {};  // This will store all decks in memory
+// Configure session middleware
+app.use(
+    session({
+        secret: "your-secret-key", // Change this to a secure random key
+        resave: false,
+        saveUninitialized: true,
+        store: new FileStore({ path: "./sessions" }), // Store sessions in the 'sessions' folder
+        cookie: { secure: false }, // Set to true if using HTTPS
+    })
+);
+
 
 // Root route
 app.get("/", (req, res) => {
-    res.send("Welcome to the Deck of Cards API! Use the /temp/deck endpoint to create a deck.");
+    res.send("Welcome to the Deck of Cards API! Use the /api/deck endpoint to create a deck.");
 });
 
-// POST /temp/deck: Create a new deck and return a unique ID
-app.post('/temp/deck', (req, res) => {
-    const deckId = generateDeckId();  // Create a unique deck ID
-    const deck = generateDeck();  // Generate a standard deck of cards
-    decks[deckId] = { deck_id: deckId, remaining: 52, cards: deck };  // Store it in memory
+// POST /deck: Create a new deck and return a unique ID
+app.post("/api/deck", (req, res) => {
+    const deckId = generateDeckId(); // Create a unique deck ID
+    const deck = generateDeck(); // Generate a standard deck of cards
 
-    res.json({ deck_id: deckId });  // Return the deck ID to the client
+    // Store the deck in the session
+    req.session.decks = req.session.decks || {};
+    req.session.decks[deckId] = { deck_id: deckId, remaining: 52, cards: deck };
+
+    res.json({ deck_id: deckId }); // Return the deck ID to the client
+    console.log("Session ID:", req.sessionID);
+    console.log("Session data:", req.session);
 });
 
-// PATCH /temp/deck/shuffle/:deck_id: Shuffle a deck
-app.patch("/temp/deck/shuffle/:deck_id", (req, res) => {
+// PATCH /deck/shuffle/:deck_id: Shuffle a deck
+app.patch("/api/deck/shuffle/:deck_id", (req, res) => {
     const deckId = req.params.deck_id;
-    if (decks[deckId]) {
-        const shuffledDeck = shuffleDeck(decks[deckId].cards);
-        decks[deckId].cards = shuffledDeck;
+    if (req.session.decks && req.session.decks[deckId]) {
+        const shuffledDeck = shuffleDeck(req.session.decks[deckId].cards);
+        req.session.decks[deckId].cards = shuffledDeck;
         res.json({ message: "Deck shuffled" });
     } else {
         res.status(404).json({ error: "Deck not found" });
     }
+    console.log("Session ID:", req.sessionID);
+    console.log("Session data:", req.session);
 });
 
-// GET /temp/deck/:deck_id: Get the full deck
-app.get("/temp/deck/:deck_id", (req, res) => {
+// GET /api/deck/:deck_id: Get the full deck
+app.get("/api/deck/:deck_id", (req, res) => {
     const deckId = req.params.deck_id;
-    if (decks[deckId]) {
-        res.json(decks[deckId]);
+    if (req.session.decks && req.session.decks[deckId]) {
+        res.json(req.session.decks[deckId]);
     } else {
         res.status(404).json({ error: "Deck not found" });
     }
+    console.log("Session ID:", req.sessionID);
+    console.log("Session data:", req.session);
 });
 
-// GET /temp/deck/:deck_id/card: Draw a random card
-app.get("/temp/deck/:deck_id/card", (req, res) => {
+// GET /api/deck/:deck_id/card: Draw a random card
+app.get("/api/deck/:deck_id/card", (req, res) => {
     const deckId = req.params.deck_id;
-    if (decks[deckId]) {
-        const card = drawCard(decks[deckId]);
+    if (req.session.decks && req.session.decks[deckId]) {
+        const card = drawCard(req.session.decks[deckId]);
         res.json(card);
     } else {
         res.status(404).json({ error: "Deck not found" });
     }
+    console.log("Session ID:", req.sessionID);
+    console.log("Session data:", req.session);
 });
 
 // Helper function to generate a unique deck ID
 function generateDeckId() {
-    return Math.random().toString(36).substring(2, 9);  // Random 7-character string
+    return Math.random().toString(36).substring(2, 9); // Random 7-character string
 }
 
 // Helper function to generate a deck of 52 cards
