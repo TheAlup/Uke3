@@ -1,5 +1,27 @@
 {
   "dependencies": {
-    "express": "^4.21.2"
-  }
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "express-session-file-store": "^1.0.2",
+    "session-file-store": "^1.5.0"
+  },
+  "name": "uke3",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheAlup/Uke3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheAlup/Uke3/issues"
+  },
+  "homepage": "https://github.com/TheAlup/Uke3#readme",
+  "description": ""
 }
