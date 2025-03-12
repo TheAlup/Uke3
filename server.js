@@ -21,7 +21,7 @@ app.use(
 );
 
 // Serve static files (HTML, CSS, JS...)
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 // Import routes AFTER initializing middleware
 const uke8routes = require("./routes/uke8routes.js");

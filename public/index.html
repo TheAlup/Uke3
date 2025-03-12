@@ -1,10 +1,22 @@
 <billa>
 <html lang="en">
 <head>
+  <link rel="manifest" href="/manifest.json" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deck of Cards</title>
+  
   <script defer src="script.js"></script> <!-- Link to your script -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js")
+        .then(() => console.log("Service Worker registered"))
+        .catch((error) => console.log("Service Worker registration failed:", error));
+    }
+  </script>
+  
+
+  
 </head>
 <body>
   <h1>Deck of Cards API</h1>
