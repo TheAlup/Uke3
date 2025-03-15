@@ -1,6 +1,8 @@
 const express = require("express");
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+//const pool = require("./db");
+
 
 const app = express();  
 const PORT = process.env.PORT || 3000;
@@ -8,6 +10,17 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON requests and URL-encoded data
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
+
+
+app.get("/test-db", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT NOW()");
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Database connection error:", error);
+        res.status(500).send("Database connection failed");
+    }
+});
 
 // Configure session before using routes
 app.use(
@@ -107,3 +120,86 @@ app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 
+
+
+
+const pool = require("./db");
+
+app.post("/api/family", async (req, res) => {
+    const { name, parent_id } = req.body;
+    try {
+        const result = await pool.query(
+            "INSERT INTO family_members (name, parent_id) VALUES ($1, $2) RETURNING *",
+            [name, parent_id]
+        );
+        res.status(201).json(result.rows[0]); // Return the new family member
+    } catch (error) {
+        console.error("Error inserting family member", error);
+        res.status(500).json({ error: "Failed to add family member" });
+    }
+});
+
+// GET /api/family - Get all family members
+app.get("/api/family", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM family_members");
+        console.log("Fetched family members:", result.rows); // Log the fetched data
+        res.json(result.rows); // Return the fetched data
+    } catch (error) {
+        console.error("Error fetching family members:", error);
+        res.status(500).json({ error: "Error fetching family members" });
+    }
+});
+
+
+// GET /api/family/:id - Get a family member by ID
+app.get("/api/family/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query("SELECT * FROM family_members WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Family member not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Error fetching family member:", error);
+        res.status(500).json({ error: "Error fetching family member" });
+    }
+});
+
+// PUT /api/family/:id - Update a family member
+app.put("/api/family/:id", async (req, res) => {
+    const { id } = req.params;
+    const { name, parent_id } = req.body;
+
+    try {
+        const result = await pool.query(
+            "UPDATE family_members SET name = $1, parent_id = $2 WHERE id = $3 RETURNING *",
+            [name, parent_id, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Family member not found" });
+        }
+        res.json(result.rows[0]); // Returning the updated family member
+    } catch (error) {
+        console.error("Error updating family member:", error);
+        res.status(500).json({ error: "Error updating family member" });
+    }
+});
+
+// DELETE /api/family/:id - Delete a family member
+app.delete("/api/family/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query("DELETE FROM family_members WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Family member not found" });
+        }
+        res.json({ message: "Family member deleted", deleted: result.rows[0] });
+    } catch (error) {
+        console.error("Error deleting family member:", error);
+        res.status(500).json({ error: "Error deleting family member" });
+    }
+});
