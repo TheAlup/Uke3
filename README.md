@@ -51,3 +51,5 @@ npm install
 Start the server:
 node server.js
 Visit http://localhost:3000/api/family
+
+The next task uses a PostgreSQL Render database (Host name: dpg-cv9ggl8fnakc739mcjbg-a). You need a .env file with DATABASE_URL= followed by the database connection string for it to work. (.env is private, so I can't share it). Make sure SSL is enabled if required.
