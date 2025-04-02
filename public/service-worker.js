@@ -4,6 +4,7 @@ const urlsToCache = [
     "/index.html",
     "/script.js",
     "/manifest.json",
+    "/style.css",
 ];
 
 // Install event - caches assets
